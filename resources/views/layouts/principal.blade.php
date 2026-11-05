@@ -9,6 +9,7 @@
   <!-- SEO Optimization -->
   <meta name="description" content="Spark Admin - Premium Bootstrap 5 Admin Dashboard Template">
   <meta name="author" content="Spark Admin Team">
+  <meta name="csrf-token" content="{{ csrf_token()}}">
 
   @vite([
                     'resources/images/favicon.ico', 'resources/libs/bootstrap/css/bootstrap.min.css',

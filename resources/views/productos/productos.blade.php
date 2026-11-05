@@ -1,7 +1,7 @@
 @extends('layouts.principal')
 
 @section('content')
-<!-- Button trigger modal -->
+<!-- modal -->
 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
   Añadir Productos+
 </button>
@@ -48,32 +48,34 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-        <button 
-          type="submit" 
-          class="btn btn-success" 
-          onclick="Swal.fire({
-            title: 'Guardado con Exito',
-            width: 600,
-            padding: '3em',
-            color: '#716add',
-            background: '#fff url(/images/trees.png)',
-            backdrop: 'rgba(0,0,123,0.4) url(/images/nyan-cat.gif) left top no-repeat'
-          })">
-          Añadir
-        </button>
+        <button type="button" class="btn btn-success" onclick="guardarConAlerta(this)">Añadir</button>
+<script>
+     function guardarConAlerta(button) {
+
+    let form = button.closest('form');
+    Swal.fire({
+        title: 'Guardado con Éxito',
+        width: 600,
+        padding: '3em',
+        color: '#716add',
+        background: '#fff url(/images/trees.png)',
+        backdrop: 'rgba(0,0,123,0.4) url(/images/nyan-cat.gif) left top no-repeat',
+        confirmButtonText: 'Aceptar'
+    }).then((result) => {
+
+        if (result.isConfirmed) {
+            form.submit();
+        }
+    });}
+</script>
       </div>
     </div>
 </form>
 </div>
 </div>
-
 <!-- Cargar SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <br>
-
-
-
 <br>
 <!--tabla-->
 <table class="table table-hover table-info">
@@ -105,9 +107,74 @@
                 <i class="bi bi-trash"></i> Eliminar
               </button>
           </form> 
-          <a href={{ route('producto.edit', $prod->id_productos) }} type="button" class="btn btn-sm btn-warning">
-            <i class="bi bi-pencil"></i> Editar
-          </a>
+         <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editProductModal{{ $prod->id_productos }}">
+    <i class="bi bi-pencil"></i> Editar
+         </button>
+
+         <!-- Modal Editar Producto -->
+<div class="modal fade" id="editProductModal{{ $prod->id_productos }}" tabindex="-1" aria-labelledby="editProductModalLabel{{ $prod->id_productos }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProductModalLabel{{ $prod->id_productos }}">Editar Producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form  action="{{ route('producto.update', $prod->id_productos) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre del Producto</label>
+                        <input type="text" name="productos" class="form-control" value="{{ old('productos', $prod->productos) }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Categoría</label>
+                        <input type="text" name="categoria" class="form-control" value="{{ old('categoria', $prod->categoria ?? '') }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Precio</label>
+                        <input type="number" step="0.01" name="precio" class="form-control" value="{{ old('precio', $prod->precio ?? '') }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Stock</label>
+                        <input type="number" name="stock" class="form-control" value="{{ old('stock', $prod->stock ?? '') }}" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="actualizarConEstilo(this)">Actualizar Cambios</button>
+                     <script>
+           function actualizarConEstilo(button) {
+           let form = button.closest('form');
+           Swal.fire({
+           title: '¡ACTUALIZADO!',
+           width: 600,
+           padding: '3em',
+           color: '#716add',
+           background: '#fff url(/images/trees.png)',
+           backdrop: 'rgba(0,0,123,0.4) url(/images/nyan-cat.gif) left top no-repeat',
+           confirmButtonText: 'Aceptar',
+           allowOutsideClick: false
+           }).then((result) => {
+           if (result.isConfirmed) {
+            form.submit();
+             }
+             });
+     }
+      </script>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
 </div>
       </td>
     </tr>
